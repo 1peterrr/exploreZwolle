@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Recommendation
+{% endblock %}
+
+{% block content %}
+
+<h2>Edit Recommendation</h2>
+
+<form method="POST">
+
+    <label for="name">Place Name</label>
+    <input
+        type="text"
+        id="name"
+        name="name"
+        value="{{ recommendation['name'] }}"
+        required
+    >
+
+    <label for="location">Location</label>
+    <input
+        type="text"
+        id="location"
+        name="location"
+        value="{{ recommendation['location'] }}"
+        required
+    >
+
+    <label for="category">Category</label>
+    <select
+        id="category"
+        name="category"
+        required
+        onchange="showOtherCategory()"
+    >
+        <option value="Restaurant"
+            {% if recommendation["category"] == "Restaurant" %}selected{% endif %}>
+            Restaurant
+        </option>
+
+        <option value="Attraction"
+            {% if recommendation["category"] == "Attraction" %}selected{% endif %}>
+            Attraction
+        </option>
+
+        <option value="Cafe"
+            {% if recommendation["category"] == "Cafe" %}selected{% endif %}>
+            Cafe
+        </option>
+
+        <option value="Nightlife"
+            {% if recommendation["category"] == "Nightlife" %}selected{% endif %}>
+            Nightlife
+        </option>
+
+        <option value="Other"
+            {% if recommendation["category"] not in ["Restaurant", "Attraction", "Cafe", "Nightlife"] %}selected{% endif %}>
+            Other
+        </option>
+    </select>
+
+
+    <div id="other-category-section" style="display: none;">
+
+        <label for="other_category">Enter Category</label>
+
+        <input
+            type="text"
+            id="other_category"
+            name="other_category"
+            value="{% if recommendation['category'] not in ['Restaurant', 'Attraction', 'Cafe', 'Nightlife'] %}{{ recommendation['category'] }}{% endif %}"
+            placeholder="e.g. Shopping, Park, Museum"
+        >
+
+    </div>
+
+
+    <label for="rating">Rating</label>
+    <select id="rating" name="rating" required>
+
+        {% for number in range(1, 6) %}
+
+            <option
+                value="{{ number }}"
+                {% if recommendation["rating"] == number %}selected{% endif %}
+            >
+                {{ number }}
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+
+    <label for="description">Description</label>
+
+    <textarea
+        id="description"
+        name="description"
+        rows="5"
+    >{{ recommendation["description"] }}</textarea>
+
+    <label for="recommended_by">Recommended By</label>
+<input
+    type="text"
+    id="recommended_by"
+    name="recommended_by"
+    value="{{ recommendation['recommended_by'] }}"
+>
+
+<label for="image_url">Image URL</label>
+<input
+    type="url"
+    id="image_url"
+    name="image_url"
+    value="{{ recommendation['image_url'] }}"
+>
+
+
+    <button type="submit">
+        Update Recommendation
+    </button>
+
+</form>
+
+
+<script>
+    function showOtherCategory() {
+        const category = document.getElementById("category");
+        const otherSection = document.getElementById("other-category-section");
+        const otherInput = document.getElementById("other_category");
+
+        if (category.value === "Other") {
+            otherSection.style.display = "block";
+            otherInput.required = true;
+        } else {
+            otherSection.style.display = "none";
+            otherInput.required = false;
+            otherInput.value = "";
+        }
+    }
+
+    showOtherCategory();
+</script>
+
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+
+<h2>Recommendations</h2>
+
+<form method="GET" action="{{ url_for('home') }}" class="filter-form">
+
+    <label for="search">Search</label>
+    <input
+        type="text"
+        id="search"
+        name="search"
+        value="{{ search }}"
+        placeholder="Search by place, location or description"
+    >
+
+    <label for="category">Filter by Category</label>
+    <select id="category" name="category">
+        <option value="">All Categories</option>
+
+        <option value="Restaurant"
+            {% if category == "Restaurant" %}selected{% endif %}>
+            Restaurant
+        </option>
+
+        <option value="Attraction"
+            {% if category == "Attraction" %}selected{% endif %}>
+            Attraction
+        </option>
+
+        <option value="Cafe"
+            {% if category == "Cafe" %}selected{% endif %}>
+            Cafe
+        </option>
+
+        <option value="Nightlife"
+            {% if category == "Nightlife" %}selected{% endif %}>
+            Nightlife
+        </option>
+    </select>
+
+    <button type="submit">Search</button>
+
+    <a href="{{ url_for('home') }}">
+        Clear
+    </a>
+
+</form>
+
+{% if recommendations %}
+
+    {% for recommendation in recommendations %}
+
+       <div class="recommendation-card">
+
+    <h3>{{ recommendation["name"] }}</h3>
+
+    {% if recommendation["image_url"] %}
+        <img
+            src="{{ recommendation['image_url'] }}"
+            alt="{{ recommendation['name'] }}"
+            class="recommendation-image"
+        >
+    {% endif %}
+
+    <p>
+        <strong>Location:</strong>
+        {{ recommendation["location"] }}
+    </p>
+
+    <p>
+        <strong>Category:</strong>
+        {{ recommendation["category"] }}
+    </p>
+
+    <p>
+        <strong>Rating:</strong>
+        {{ recommendation["rating"] }}/5
+    </p>
+
+    <p>
+        {{ recommendation["description"] }}
+    </p>
+
+    {% if recommendation["recommended_by"] %}
+        <p>
+            <strong>Recommended by:</strong>
+            {{ recommendation["recommended_by"] }}
+        </p>
+    {% endif %}
+
+    <a href="{{ url_for('edit', recommendation_id=recommendation['id']) }}">
+        Edit
+    </a>
+
+    <form
+        action="{{ url_for('delete', recommendation_id=recommendation['id']) }}"
+        method="POST"
+        class="delete-form"
+    >
+        <button type="submit" class="delete-button">
+            Delete
+        </button>
+    </form>
+
+</div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No recommendations have been added yet.</p>
+
+{% endif %}
+
+{% endblock %}
